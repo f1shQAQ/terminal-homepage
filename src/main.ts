@@ -2,8 +2,10 @@ import '@xterm/xterm/css/xterm.css';
 import './style.css';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
+import { WebglAddon } from '@xterm/addon-webgl';
 import { Terminal } from '@xterm/xterm';
 import { welcome } from './banner';
+import { fastfetch } from './commands/fastfetch';
 import { fsCommands } from './commands/fs';
 import { infoCommands } from './commands/info';
 import { systemCommands } from './commands/system';
@@ -31,6 +33,16 @@ const fit = new FitAddon();
 term.loadAddon(fit);
 term.loadAddon(new WebLinksAddon((_event, uri) => window.open(uri, '_blank', 'noopener')));
 term.open(container);
+
+// WebGL 渲染器自己画 ▀ 这类方块字符，能铺满整个格子；默认的 DOM 渲染器用字体画，格子之间会有缝。
+// 不支持 WebGL 或者上下文丢失时退回 DOM 渲染器
+try {
+  const webgl = new WebglAddon();
+  webgl.onContextLoss(() => webgl.dispose());
+  term.loadAddon(webgl);
+} catch {
+  // 保持 DOM 渲染器
+}
 fit.fit();
 new ResizeObserver(() => fit.fit()).observe(container);
 
@@ -51,7 +63,7 @@ term.attachCustomKeyEventHandler((e) => {
 });
 
 const shell = new Shell(term, theme);
-shell.register([...fsCommands, ...infoCommands, ...systemCommands]);
+shell.register([...fsCommands, ...infoCommands, ...systemCommands, fastfetch]);
 shell.onCwdChange = (cwd) => {
   const text = `guest@fishqaq.com: ${displayPath(cwd)}`;
   title.textContent = text;
