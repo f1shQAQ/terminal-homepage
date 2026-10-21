@@ -1,4 +1,5 @@
-import { LOGO } from '../banner';
+import { padEnd, strWidth } from '../shell/width';
+import { DEFAULT_LOGO, LOGOS, renderLogo } from './logos';
 import { HOME, listDir, lookup } from '../fs/vfs';
 import { dim, paint } from '../shell/ansi';
 import type { Command } from '../shell/types';
@@ -109,11 +110,13 @@ const neofetch: Command = {
       '',
       swatch,
     ];
-    const logoWidth = Math.max(...LOGO.map((l) => l.length)) + 3;
-    if (shell.term.cols < logoWidth + 32) return ctx.out([...LOGO.map((l) => paint('36', l)), '', ...info].join('\n'));
-    const rows = Math.max(LOGO.length, info.length);
+    // 和 fastfetch 用同一个默认 logo
+    const logo = renderLogo(LOGOS[DEFAULT_LOGO]);
+    const logoWidth = Math.max(...logo.map(strWidth)) + 3;
+    if (shell.term.cols < logoWidth + 32) return ctx.out([...logo, '', ...info].join('\n'));
+    const rows = Math.max(logo.length, info.length);
     const lines: string[] = [];
-    for (let i = 0; i < rows; i++) lines.push(paint('36', (LOGO[i] ?? '').padEnd(logoWidth)) + (info[i] ?? ''));
+    for (let i = 0; i < rows; i++) lines.push(padEnd(logo[i] ?? '', logoWidth) + (info[i] ?? ''));
     ctx.out(lines.join('\n'));
   },
 };
