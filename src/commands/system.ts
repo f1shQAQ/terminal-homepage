@@ -100,4 +100,11 @@ const sudo: Command = {
   run: (ctx) => ctx.err('guest 不在 sudoers 文件中。此事将被报告。'),
 };
 
-export const systemCommands = [clear, echo, date, history, theme, uname, which, motd, exit, sudo];
+const kskbl: Command = {
+  name: 'kskbl',
+  summary: 'zdjd',
+  hidden: true,
+  run: (ctx) => ctx.out('zdjd'),
+};
+
+export const systemCommands = [clear, echo, date, history, theme, uname, which, motd, exit, sudo, kskbl];
