@@ -1,0 +1,193 @@
+:root {
+  --page: #dce0e8;
+  --bg: #eff1f5;
+  --fg: #4c4f69;
+  --chrome: #e6e9ef;
+  --border: #ccd0da;
+  --muted: #8c8fa1;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --page: #11111b;
+  --bg: #1e1e2e;
+  --fg: #cdd6f4;
+  --chrome: #181825;
+  --border: #313244;
+  --muted: #7f849c;
+  color-scheme: dark;
+}
+
+/* 没有 data-theme（脚本没跑）时直接跟随系统 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --page: #11111b;
+    --bg: #1e1e2e;
+    --fg: #cdd6f4;
+    --chrome: #181825;
+    --border: #313244;
+    --muted: #7f849c;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--page);
+  color: var(--fg);
+  transition: background-color 0.2s;
+}
+
+body {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+}
+
+#app {
+  width: 100%;
+  max-width: 1100px;
+  height: min(760px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.25);
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0 14px;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font: 13px/1 ui-monospace, 'Cascadia Code', Consolas, monospace;
+  user-select: none;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.dots i:nth-child(2) {
+  background: #febc2e;
+}
+
+.dots i:nth-child(3) {
+  background: #28c840;
+}
+
+.title {
+  flex: 1;
+  margin-right: 52px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* FitAddon 读的是父元素的 computed height，用 content-box 才不会把 padding 算进去 */
+#terminal {
+  box-sizing: content-box;
+  flex: 1;
+  min-height: 0;
+  padding: 10px 4px 6px 14px;
+}
+
+/* xterm.css 给 viewport 写死了黑色背景，边缘会露出一圈细线 */
+#terminal .xterm-viewport {
+  background-color: transparent;
+}
+
+#keys {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  #keys {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    overflow-x: auto;
+    background: var(--chrome);
+    border-top: 1px solid var(--border);
+  }
+
+  #keys button {
+    flex: 1 1 0;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 4px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px ui-monospace, Consolas, monospace;
+  }
+
+  #keys button:active {
+    background: var(--border);
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0;
+  }
+
+  #app {
+    height: 100%;
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .dots {
+    display: none;
+  }
+
+  .title {
+    margin-right: 0;
+  }
+
+  #terminal {
+    padding: 6px 2px 4px 8px;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

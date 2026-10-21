@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#1e1e2e" />
+    <meta name="description" content="f1sh 的个人主页，一个可以真正敲命令的终端。" />
+    <title>guest@f1sh: ~</title>
+    <!-- 在样式和脚本加载前定好主题，避免首屏闪一下错误的颜色 -->
+    <script>
+      (function () {
+        var mode = null;
+        try { mode = localStorage.getItem('term:theme'); } catch (e) {}
+        var dark = mode ? mode === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+    <style>
+      html { background: #dce0e8; }
+      html[data-theme='dark'] { background: #11111b; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header class="titlebar">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="title" id="title">guest@f1sh: ~</span>
+      </header>
+      <div id="terminal"></div>
+      <nav id="keys" aria-label="终端按键">
+        <button type="button" data-key="tab">Tab</button>
+        <button type="button" data-key="up">↑</button>
+        <button type="button" data-key="down">↓</button>
+        <button type="button" data-key="left">←</button>
+        <button type="button" data-key="right">→</button>
+        <button type="button" data-key="ctrl-c">^C</button>
+        <button type="button" data-key="ctrl-r">^R</button>
+        <button type="button" data-key="ctrl-l">^L</button>
+      </nav>
+    </div>
+
+    <!-- 给搜索引擎、读屏软件和禁用 JS 的访客看的纯文本版本，改了 content/ 记得同步 -->
+    <main id="fallback" class="sr-only">
+      <h1>f1sh</h1>
+      <p>你好，这里是 f1sh 的个人主页。</p>
+      <h2>联系方式</h2>
+      <ul>
+        <li><a href="https://github.com/f1shQAQ">GitHub: f1shQAQ</a></li>
+      </ul>
+    </main>
+    <noscript>
+      <style>
+        #app { display: none; }
+        #fallback { position: static; width: auto; height: auto; clip: auto; margin: 0 auto; max-width: 720px; padding: 24px; }
+      </style>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
