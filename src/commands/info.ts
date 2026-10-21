@@ -2,21 +2,6 @@ import { LOGO } from '../banner';
 import { HOME, listDir, lookup } from '../fs/vfs';
 import { dim, paint } from '../shell/ansi';
 import type { Command } from '../shell/types';
-import { padEnd, strWidth } from '../shell/width';
-
-const SHORTCUTS: [string, string][] = [
-  ['Tab', '补全命令和路径，有多个候选时按两次列出'],
-  ['↑ / ↓', '上一条 / 下一条历史命令'],
-  ['Ctrl+R', '反向搜索历史，再按一次找更早的'],
-  ['Ctrl+A / E', '跳到行首 / 行尾'],
-  ['Alt+B / F', '按单词左移 / 右移'],
-  ['Ctrl+U / K', '删到行首 / 删到行尾'],
-  ['Alt+Backspace', '删除前一个单词（Ctrl+W 会被浏览器拿去关标签页）'],
-  ['Ctrl+Y', '粘贴刚才删掉的内容'],
-  ['Alt+.', '插入上一条命令的最后一个参数'],
-  ['Ctrl+L', '清屏'],
-  ['Ctrl+C', '有选中文字时复制，否则放弃当前输入'],
-];
 
 const commandNames = (_args: string[], shell: { commands: Map<string, Command> }) =>
   [...shell.commands.values()].filter((c) => !c.hidden).map((c) => c.name);
@@ -30,21 +15,17 @@ const help: Command = {
     const name = ctx.args[0];
     if (name) {
       const command = ctx.shell.commands.get(name);
-      if (!command) return ctx.err(`help: 没有 ${name} 这个命令`);
-      return ctx.out(`${paint('1', command.name)} — ${command.summary}\n\n用法：${command.usage ?? command.name}`);
+      if (!command || command.hidden) return ctx.err(`help: 没有 ${name} 这个命令`);
+      return ctx.out(`${paint('1', command.name)} — ${command.summary}\n用法：${command.usage ?? command.name}`);
     }
-    const commands = [...ctx.shell.commands.values()].filter((c) => !c.hidden).sort((a, b) => a.name.localeCompare(b.name));
-    const width = Math.max(...commands.map((c) => c.name.length)) + 3;
-    const keyWidth = Math.max(...SHORTCUTS.map(([k]) => strWidth(k))) + 3;
+    const names = commandNames([], ctx.shell).sort();
     ctx.out(
       [
-        paint('1', '命令'),
-        ...commands.map((c) => `  ${paint('32', c.name.padEnd(width))}${c.summary}`),
+        '命令格式：<命令> [参数...]',
+        `可用命令：${names.join(', ')}`,
         '',
-        paint('1', '快捷键'),
-        ...SHORTCUTS.map(([k, d]) => `  ${paint('33', padEnd(k, keyWidth))}${d}`),
-        '',
-        dim('支持管道，例如 cat about.md | grep 技术'),
+        // hidden 的命令不列出来，留给访客自己发现
+        paint('90', '这里还藏着一些彩蛋，试着把它们都找出来吧！'),
       ].join('\n'),
     );
   },
@@ -55,7 +36,7 @@ const man: Command = { ...help, name: 'man', hidden: true };
 const whoami: Command = {
   name: 'whoami',
   summary: '你是谁',
-  run: (ctx) => ctx.out(`guest\n${dim('想知道我是谁？试试 cat about.md')}`),
+  run: (ctx) => ctx.out(`guest\n${dim('想知道我是谁？试试 cat README.md')}`),
 };
 
 const projects: Command = {

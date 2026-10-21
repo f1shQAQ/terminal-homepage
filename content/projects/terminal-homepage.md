@@ -8,7 +8,7 @@
 - 输入时用灰色提示后半段（来自历史记录或补全），按 Tab 或 → 接受
 - Tab 补全命令和路径，↑↓ 翻历史，Ctrl+R 搜索历史
 - 支持 Ctrl+A / E / U / K、Alt+B / F 等常用快捷键
-- 支持管道：`cat about.md | grep 技术`
+- 支持管道：`cat README.md | grep 技术`
 
 ## 技术
 

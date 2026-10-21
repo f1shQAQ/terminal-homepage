@@ -22,6 +22,7 @@ const echo: Command = {
 
 const date: Command = {
   name: 'date',
+  hidden: true,
   summary: '显示当前时间',
   run: (ctx) => ctx.out(new Date().toLocaleString('zh-CN', { dateStyle: 'full', timeStyle: 'medium' })),
 };
@@ -65,6 +66,7 @@ const uname: Command = {
 
 const which: Command = {
   name: 'which',
+  hidden: true,
   summary: '查找命令位置',
   usage: 'which <命令...>',
   complete: (_args, shell) => [...shell.commands.values()].filter((c) => !c.hidden).map((c) => c.name),
@@ -79,6 +81,7 @@ const which: Command = {
 
 const motd: Command = {
   name: 'motd',
+  hidden: true,
   summary: '再看一次欢迎信息',
   run: (ctx) => ctx.out(welcome()),
 };
@@ -86,6 +89,7 @@ const motd: Command = {
 const exit: Command = {
   name: 'exit',
   summary: '退出',
+  hidden: true,
   run: (ctx) => ctx.out(`logout\n${dim('这是网页，退不出去的 :)')}`),
 };
 

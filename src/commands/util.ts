@@ -19,7 +19,7 @@ export function parseFlags(args: string[]) {
 export function readInput(ctx: Context, files: string[], name: string): string | null {
   if (!files.length) {
     if (ctx.stdin !== null) return ctx.stdin.replace(/\n$/, '');
-    ctx.err(`${name}: 缺少输入，给一个文件名或者用管道，例如 cat about.md | ${name}`);
+    ctx.err(`${name}: 缺少输入，给一个文件名或者用管道，例如 cat README.md | ${name}`);
     return null;
   }
   const parts: string[] = [];

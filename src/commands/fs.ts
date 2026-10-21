@@ -74,7 +74,7 @@ const cat: Command = {
   run(ctx) {
     if (!ctx.args.length) {
       if (ctx.stdin !== null) return ctx.out(ctx.stdin);
-      return ctx.err('cat: 缺少文件名，试试 cat about.md');
+      return ctx.err('cat: 缺少文件名，试试 cat README.md');
     }
     for (const file of ctx.args) {
       const node = lookup(normalize(file, ctx.shell.cwd));
@@ -123,6 +123,7 @@ const tree: Command = {
 
 const head: Command = {
   name: 'head',
+  hidden: true,
   summary: '显示前几行',
   usage: 'head [-n 行数] [文件]',
   run(ctx) {
@@ -142,6 +143,7 @@ const head: Command = {
 
 const grep: Command = {
   name: 'grep',
+  hidden: true,
   summary: '按关键词或正则过滤行',
   usage: 'grep [-i] <模式> [文件...]',
   run(ctx) {
@@ -173,6 +175,7 @@ const grep: Command = {
 
 const wc: Command = {
   name: 'wc',
+  hidden: true,
   summary: '统计行数、词数、字符数',
   usage: 'wc [-l] [文件...]',
   run(ctx) {
