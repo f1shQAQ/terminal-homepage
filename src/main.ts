@@ -7,6 +7,7 @@ import { welcome } from './banner';
 import { fastfetch } from './commands/fastfetch';
 import { fsCommands } from './commands/fs';
 import { infoCommands } from './commands/info';
+import { rm } from './commands/rm';
 import { systemCommands } from './commands/system';
 import { displayPath } from './fs/vfs';
 import { Shell } from './shell/shell';
@@ -62,7 +63,7 @@ term.attachCustomKeyEventHandler((e) => {
 });
 
 const shell = new Shell(term, theme);
-shell.register([...fsCommands, ...infoCommands, ...systemCommands, fastfetch]);
+shell.register([...fsCommands, ...infoCommands, ...systemCommands, fastfetch, rm]);
 shell.onCwdChange = (cwd) => {
   const text = `guest@fishqaq.com: ${displayPath(cwd)}`;
   title.textContent = text;
