@@ -4,6 +4,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
 import { Terminal } from '@xterm/xterm';
 import { welcome } from './banner';
+import { comment, returningFromLogin, setCommentTheme } from './commands/comment';
 import { fastfetch } from './commands/fastfetch';
 import { fsCommands } from './commands/fs';
 import { infoCommands } from './commands/info';
@@ -28,6 +29,7 @@ const term = new Terminal({
 
 // 主题要在 open 之前设好，否则 viewport 会先用默认的黑色背景
 const theme = new ThemeController(term);
+theme.onChange = setCommentTheme;
 
 const fit = new FitAddon();
 term.loadAddon(fit);
@@ -63,7 +65,7 @@ term.attachCustomKeyEventHandler((e) => {
 });
 
 const shell = new Shell(term, theme);
-shell.register([...fsCommands, ...infoCommands, ...systemCommands, fastfetch, rm]);
+shell.register([...fsCommands, ...infoCommands, ...systemCommands, fastfetch, rm, comment]);
 shell.onCwdChange = (cwd) => {
   const text = `guest@fishqaq.com: ${displayPath(cwd)}`;
   title.textContent = text;
@@ -95,4 +97,10 @@ if (import.meta.env.DEV) Object.assign(window, { term, shell });
 
 term.write(welcome() + '\n');
 term.focus();
-shell.run();
+if (returningFromLogin()) {
+  // 从 GitHub 登录回来，装作访客刚输入了 comment
+  term.write(shell.prompt() + 'comment\n');
+  shell.execute('comment').then(() => shell.run());
+} else {
+  shell.run();
+}

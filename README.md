@@ -37,3 +37,4 @@ npm run build
 | `src/shell/shell.ts` | 命令循环、管道、找不到命令时的拼写提示 |
 | `src/fs/vfs.ts` | 虚拟文件系统 |
 | `src/commands/` | 所有命令 |
+| `src/commands/comment.ts` | 留言板弹窗，基于 giscus，留言存在 `f1shQAQ/xianyu_blog` 的 Discussions（`homepage-comment` 分类） |

@@ -42,6 +42,18 @@
       </nav>
     </div>
 
+    <!-- comment 命令打开的留言板，样式和上面的终端窗口一致；红点就是关闭按钮 -->
+    <div id="comment" class="overlay" hidden>
+      <div class="comment-window" role="dialog" aria-modal="true" aria-labelledby="comment-title" tabindex="-1">
+        <header class="titlebar">
+          <span class="dots"><button type="button" class="dot-close" aria-label="关闭留言板" data-close></button><i></i><i></i></span>
+          <span class="title" id="comment-title">guest@fishqaq.com: ~/comment</span>
+          <button type="button" class="close-x" aria-label="关闭留言板" data-close>×</button>
+        </header>
+        <div class="comment-body"><div class="giscus"></div></div>
+      </div>
+    </div>
+
     <!-- 给搜索引擎、读屏软件和禁用 JS 的访客看的纯文本版本，改了 content/ 记得同步 -->
     <main id="fallback" class="sr-only">
       <h1>咸鱼小窝</h1>

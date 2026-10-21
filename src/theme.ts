@@ -68,6 +68,7 @@ function readMode(): ThemeMode {
 
 export class ThemeController {
   mode: ThemeMode = readMode();
+  onChange: (theme: ResolvedTheme) => void = () => {};
 
   constructor(private term: Terminal) {
     // 系统切换深浅色时，auto 模式实时跟随
@@ -98,5 +99,6 @@ export class ThemeController {
     document.documentElement.dataset.theme = theme;
     this.term.options.theme = palettes[theme];
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', palettes[theme].background!);
+    this.onChange(theme);
   }
 }
