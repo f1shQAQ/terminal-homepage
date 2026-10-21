@@ -1,11 +1,10 @@
 import { paint } from './shell/ansi';
 
+// figlet Calvin S
 export const LOGO = [
-  '  __ _     _     ',
-  ' / _/ |___| |__  ',
-  '| |_| / __| \'_ \\ ',
-  '|  _| \\__ \\ | | |',
-  '|_| |_|___/_| |_|',
+  '┌─┐┬┌─┐┬ ┬┌─┐ ┌─┐┌─┐  ┌─┐┌─┐┌┬┐',
+  '├┤ │└─┐├─┤│─┼┐├─┤│─┼┐ │  │ ││││',
+  '└  ┴└─┘┴ ┴└─┘└┴ ┴└─┘└o└─┘└─┘┴ ┴',
 ];
 
 export function welcome(): string {
@@ -14,7 +13,7 @@ export function welcome(): string {
   return [
     ...LOGO.map((line) => paint('36', line)),
     '',
-    `欢迎来到 ${paint('1', 'f1sh')} 的终端主页。`,
+    `欢迎来到${paint('1', '咸鱼小窝')}。`,
     `第一次来？输入 ${cmd('cat README.md')} 看看怎么玩，${cmd('help')} 查看所有命令。`,
     `${key('Tab')} 接受灰色提示 / 补全  ${key('↑↓')} 历史  ${key('Ctrl+R')} 搜索历史  ${key('Ctrl+L')} 清屏`,
     '',
