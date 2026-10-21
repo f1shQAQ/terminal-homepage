@@ -20,6 +20,8 @@
       html { background: #dce0e8; }
       html[data-theme='dark'] { background: #11111b; }
     </style>
+    <!-- 放在 head 里阻塞渲染；如果在 main.ts 里 import，开发模式下要等 JS 跑完才有样式，会先闪一下没样式的页面 -->
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <div id="app">

@@ -1,5 +1,4 @@
 import '@xterm/xterm/css/xterm.css';
-import './style.css';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
