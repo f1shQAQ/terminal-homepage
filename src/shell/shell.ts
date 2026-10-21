@@ -50,7 +50,7 @@ export class Shell {
   }
 
   prompt(): string {
-    return `${paint('1;32', 'guest@f1sh')}:${paint('1;34', displayPath(this.cwd))}$ `;
+    return `${paint('1;32', 'guest@fishqaq.com')}:${paint('1;34', displayPath(this.cwd))}$ `;
   }
 
   async run() {

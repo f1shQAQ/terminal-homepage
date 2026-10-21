@@ -70,6 +70,19 @@ const open: Command = {
   },
 };
 
+const BLOG_URL = 'https://blog.fishqaq.com';
+
+const blog: Command = {
+  name: 'blog',
+  summary: '跳转到我的博客',
+  complete: () => [],
+  run(ctx) {
+    ctx.out(`正在跳转到 ${BLOG_URL} ...`);
+    // 等这行字显示出来再跳
+    setTimeout(() => location.assign(BLOG_URL), 300);
+  },
+};
+
 function uptime(ms: number): string {
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
@@ -84,7 +97,7 @@ const neofetch: Command = {
     const key = (k: string) => paint('1;36', k);
     const swatch = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => `\x1b[4${i}m   `).join('') + '\x1b[0m';
     const info = [
-      `${paint('1;32', 'guest')}@${paint('1;32', 'f1sh')}`,
+      `${paint('1;32', 'guest')}@${paint('1;32', 'fishqaq.com')}`,
       '──────────',
       `${key('OS')}: TermOS (浏览器)`,
       `${key('Shell')}: tsh 0.1`,
@@ -105,4 +118,4 @@ const neofetch: Command = {
   },
 };
 
-export const infoCommands = [help, man, whoami, projects, open, neofetch];
+export const infoCommands = [help, man, whoami, projects, blog, open, neofetch];

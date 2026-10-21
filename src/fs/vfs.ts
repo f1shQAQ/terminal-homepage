@@ -83,6 +83,6 @@ for (const [path, content] of Object.entries(files)) {
 }
 
 mkdirp(['tmp']);
-writeFile('/etc/hostname', 'f1sh\n');
+writeFile('/etc/hostname', 'fishqaq.com\n');
 writeFile('/etc/motd', '欢迎光临。这里的一切都只存在于你的浏览器里。\n');
 writeFile(`${HOME}/.secret`, '恭喜你发现了隐藏文件 🎉\n用 ls -a 能看到所有以 . 开头的文件。\n');

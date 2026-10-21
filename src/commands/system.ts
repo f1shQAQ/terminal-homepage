@@ -61,7 +61,7 @@ const uname: Command = {
   usage: 'uname [-a]',
   complete: () => ['-a'],
   run: (ctx) =>
-    ctx.out(parseFlags(ctx.args).flags.has('a') ? `TermOS f1sh 0.1.0 xterm.js ${navigator.platform || 'web'}` : 'TermOS'),
+    ctx.out(parseFlags(ctx.args).flags.has('a') ? `TermOS fishqaq.com 0.1.0 xterm.js ${navigator.platform || 'web'}` : 'TermOS'),
 };
 
 const which: Command = {

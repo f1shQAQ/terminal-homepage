@@ -53,7 +53,7 @@ term.attachCustomKeyEventHandler((e) => {
 const shell = new Shell(term, theme);
 shell.register([...fsCommands, ...infoCommands, ...systemCommands]);
 shell.onCwdChange = (cwd) => {
-  const text = `guest@f1sh: ${displayPath(cwd)}`;
+  const text = `guest@fishqaq.com: ${displayPath(cwd)}`;
   title.textContent = text;
   document.title = text;
 };
