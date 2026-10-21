@@ -4,7 +4,8 @@
 
 ## 灵感来源
 
-灵感来源于我偶然看到的另一个个人主页 [chriskim.cn](https://www.chriskim.cn/)
+灵感来源于我偶然看到的另一个个人主页 https://www.chriskim.cn/
+
 ## 在这里能做什么
 
 - 用 `ls`、`cd`、`cat` 翻看我的项目和联系方式
