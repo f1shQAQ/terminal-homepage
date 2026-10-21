@@ -1,6 +1,6 @@
 import type { Terminal } from '@xterm/xterm';
 import type { History } from './history';
-import { stripAnsi } from './ansi';
+import { paint, stripAnsi } from './ansi';
 import { charWidth, formatColumns } from './width';
 
 export interface Completion {
@@ -20,6 +20,13 @@ interface SearchState {
   failed: boolean;
   savedBuf: string[];
   savedPos: number;
+}
+
+interface Suggestion {
+  /** 光标后面显示成灰色的那段 */
+  text: string;
+  /** 来自历史记录（整段接受），还是来自补全（交给 complete 处理） */
+  fromHistory: boolean;
 }
 
 const isWordChar = (ch: string) => /[\p{L}\p{N}_]/u.test(ch);
@@ -51,6 +58,7 @@ export class Readline {
   private killRing = '';
   private lastWasTab = false;
   private search: SearchState | null = null;
+  private suggestion: Suggestion | null = null;
 
   constructor(
     private term: Terminal,
@@ -86,6 +94,8 @@ export class Readline {
       case '\x04': // Ctrl+D
         return this.buf.length ? this.deleteForward() : this.eof();
       case '\t':
+        // 有历史提示时 Tab 整段接受；补全来的提示交给 complete，行为和原来一致
+        if (this.suggestion?.fromHistory) return this.insert(this.suggestion.text);
         return this.complete(wasTab);
       case '\x12': // Ctrl+R
         return this.startSearch();
@@ -105,6 +115,7 @@ export class Readline {
       case '\x1b[C':
       case '\x1bOC':
       case '\x06': // Ctrl+F
+        if (this.suggestion) return this.insert(this.suggestion.text);
         return this.moveTo(this.pos + 1);
       case '\x1b[H':
       case '\x1bOH':
@@ -115,6 +126,7 @@ export class Readline {
       case '\x1bOF':
       case '\x1b[4~':
       case '\x05': // Ctrl+E
+        if (this.suggestion) return this.insert(this.suggestion.text);
         return this.moveTo(this.buf.length);
       case '\x1bb': // Alt+B
       case '\x1b[1;5D': // Ctrl+←
@@ -123,6 +135,8 @@ export class Readline {
       case '\x1bf': // Alt+F
       case '\x1b[1;5C': // Ctrl+→
       case '\x1b[1;3C':
+        // 在行尾时只接受提示里的下一个词
+        if (this.suggestion) return this.insert(this.suggestion.text.match(/^[^\p{L}\p{N}_]*[\p{L}\p{N}_]*/u)![0]);
         return this.moveTo(this.wordEnd());
 
       case '\x1b[A':
@@ -232,7 +246,7 @@ export class Readline {
 
   private accept() {
     this.pos = this.buf.length;
-    this.render();
+    this.renderPlain();
     this.term.write('\r\n');
     const line = this.buf.join('');
     // 和 bash 的 HISTCONTROL=ignorespace 一样，空格开头的命令不进历史
@@ -242,7 +256,7 @@ export class Readline {
 
   private interrupt() {
     this.pos = this.buf.length;
-    this.render();
+    this.renderPlain();
     this.term.write('^C\r\n');
     this.finish('');
   }
@@ -285,6 +299,7 @@ export class Readline {
   // ---------- Ctrl+R 反向搜索 ----------
 
   private startSearch() {
+    this.suggestion = null;
     this.search = {
       query: '',
       index: this.history.all.length,
@@ -395,7 +410,7 @@ export class Readline {
   private printAbove(text: string) {
     const pos = this.pos;
     this.pos = this.buf.length;
-    this.render();
+    this.renderPlain();
     this.term.write('\r\n' + text.replace(/\n/g, '\r\n') + '\r\n');
     this.cursorRow = 0;
     this.pos = pos;
@@ -405,18 +420,47 @@ export class Readline {
   // ---------- 绘制 ----------
 
   private render() {
+    this.suggestion = this.suggest();
+    this.draw(this.prompt, this.buf, this.pos, this.suggestion?.text ?? '');
+  }
+
+  /** 不带灰色提示地重画，用于回车、Ctrl+C 这类要把这一行定下来的时候 */
+  private renderPlain() {
+    this.suggestion = null;
     this.draw(this.prompt, this.buf, this.pos);
+  }
+
+  /**
+   * 光标在行尾时，先从历史里找以当前输入开头的最近一条（像 fish），
+   * 找不到再看补全：唯一候选或候选的公共前缀比当前词长，就提示多出来的部分。
+   */
+  private suggest(): Suggestion | null {
+    if (this.pos !== this.buf.length) return null;
+    const line = this.buf.join('');
+    if (!line.trim()) return null;
+
+    const items = this.history.all;
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (items[i].length > line.length && items[i].startsWith(line)) {
+        return { text: items[i].slice(line.length), fromHistory: true };
+      }
+    }
+
+    const { word, candidates } = this.completer(line);
+    if (!word || !candidates.length) return null;
+    const target = candidates.length === 1 ? candidates[0] : commonPrefix(candidates);
+    return target.length > word.length ? { text: target.slice(word.length), fromHistory: false } : null;
   }
 
   /**
    * 从提示符所在行的行首开始整行重画，自己计算折行，
    * 再把光标放回 cursor 对应的格子。cursorRow 记录光标相对提示符起始行的行数。
    */
-  private draw(prompt: string, chars: string[], cursor: number) {
+  private draw(prompt: string, chars: string[], cursor: number, ghost = '') {
     const cols = this.term.cols;
     let out = '';
     if (this.cursorRow > 0) out += `\x1b[${this.cursorRow}A`;
-    out += '\r\x1b[J' + prompt + chars.join('');
+    out += '\r\x1b[J' + prompt + chars.join('') + (ghost ? paint('90', ghost) : '');
 
     let row = 0;
     let col = 0;
@@ -445,6 +489,8 @@ export class Readline {
       curRow = row;
       curCol = col;
     }
+    // 灰色提示画在光标后面，只参与折行计算，不影响光标位置
+    Array.from(ghost).forEach((ch) => place(ch, -1));
 
     // 正好写满一行时终端处于"待折行"状态，手动换行让光标落到下一行行首
     if (col === 0 && row > 0) out += '\r\n';

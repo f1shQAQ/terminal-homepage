@@ -32,7 +32,7 @@ npm run build
 | 文件 | 作用 |
 |---|---|
 | `src/theme.ts` | 读取 `prefers-color-scheme`，监听系统切换，同步 xterm 配色和 CSS 变量 |
-| `src/shell/readline.ts` | 行编辑、折行绘制、快捷键、历史导航、Ctrl+R、Tab 补全 |
+| `src/shell/readline.ts` | 行编辑、折行绘制、快捷键、历史导航、Ctrl+R、灰色提示、Tab 补全 |
 | `src/shell/completer.ts` | 补命令名、命令参数、路径 |
 | `src/shell/shell.ts` | 命令循环、管道、找不到命令时的拼写提示 |
 | `src/fs/vfs.ts` | 虚拟文件系统 |
