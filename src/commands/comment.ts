@@ -1,12 +1,12 @@
 import type { Command } from '../shell/types';
 import type { ResolvedTheme } from '../theme';
 
-// 留言存在 f1shQAQ/xianyu_blog 的 Discussions 里，所有留言都进同一个讨论帖
+// 留言存在 f1shQAQ/blog-community 的 Discussions 里，所有留言都进同一个讨论帖
 const GISCUS = {
-  repo: 'f1shQAQ/xianyu_blog',
-  repoId: 'R_kgDOMx4vnA',
-  category: 'homepage-comment',
-  categoryId: 'DIC_kwDOMx4vnM4DJSE7',
+  repo: 'f1shQAQ/blog-community',
+  repoId: 'R_kgDOVTGZAg',
+  category: 'Home-Page',
+  categoryId: 'DIC_kwDOVTGZAs4DJT8D',
   mapping: 'specific',
   term: 'guestbook',
   strict: '0',
